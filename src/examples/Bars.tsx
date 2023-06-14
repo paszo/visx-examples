@@ -9,8 +9,6 @@ import { Bar } from "@visx/shape";
 const data = letterFrequency.slice(0, 5);
 const verticalMargin = 120;
 
-console.log(data);
-
 // accessors
 const getLetter = (d: LetterFrequency) => d.letter;
 const getLetterFrequency = (d: LetterFrequency) => Number(d.frequency) * 100;
@@ -20,6 +18,15 @@ export type BarsProps = {
   height: number;
 };
 const Bars = ({ width, height }: BarsProps) => {
+
+
+    if(width < 100){
+        width = 100;
+    }
+    if(height < 100){
+        height = 100;
+    }
+
   const xMax = width;
   const yMax = height - verticalMargin;
 

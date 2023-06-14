@@ -1,11 +1,13 @@
 import React from 'react';
-import './App.css';
 import Bars from  "./examples/Bars";
+import withResponsiveness from "./examples/withResponsiveness";
+
+const ResponsiveBars = withResponsiveness(Bars);
 
 function App() {
   return (
-    <div className="App">
-      <Bars width={600} height={400}/>
+    <div className="App" style={{height: "100vh"}}>
+        <ResponsiveBars/>
     </div>
   );
 }
