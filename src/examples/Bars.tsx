@@ -5,9 +5,10 @@ import letterFrequency, {
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { Bar } from "@visx/shape";
+import {AxisLeft, AxisBottom} from "@visx/axis";
 
 const data = letterFrequency.slice(0, 5);
-const verticalMargin = 120;
+const margin = {left: 50, right: 50, bottom: 50, top:50};
 
 // accessors
 const getLetter = (d: LetterFrequency) => d.letter;
@@ -27,38 +28,39 @@ const Bars = ({ width, height }: BarsProps) => {
         height = 100;
     }
 
-  const xMax = width;
-  const yMax = height - verticalMargin;
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
   const xScale = useMemo(
     () =>
       scaleBand<string>({
-        range: [0, xMax],
+        range: [0, innerWidth],
         domain: data.map(getLetter),
         padding: 0.4,
       }),
-    [xMax]
+    [innerWidth]
   );
 
   const yScale = useMemo(
     () =>
       scaleLinear<number>({
-        range: [yMax, 0],
+        range: [innerHeight, 0],
         domain: [0, Math.max(...data.map(getLetterFrequency))],
+          nice: true
       }),
-    [yMax]
+    [innerHeight]
   );
 
   return (
     <svg width={width} height={height}>
       <rect width={width} height={height} fill="#f1f1f1" />
-      <Group top={verticalMargin / 2}>
+      <Group top={margin.top} left={margin.left}>
         {data.map((d) => {
           const letter = getLetter(d);
           const barWidth = xScale.bandwidth();
-          const barHeight = yMax - yScale(getLetterFrequency(d));
+          const barHeight = innerHeight - yScale(getLetterFrequency(d));
           const barX = xScale(letter);
-          const barY = yMax - barHeight;
+          const barY = innerHeight - barHeight;
           return (
             <Bar
               key={`bar-${letter}`}
@@ -74,6 +76,8 @@ const Bars = ({ width, height }: BarsProps) => {
           );
         })}
       </Group>
+        <AxisLeft scale={yScale} left={margin.left} top={margin.top}></AxisLeft>
+        <AxisBottom scale={xScale} top={margin.top + innerHeight} left={margin.left}/>
     </svg>
   );
 };
